@@ -9,8 +9,15 @@
   </head>
 
   <body>
-    <div id="root">
-    </div>
+    <div id="container"></div>
+    <template id="episode-template">
+      <section class="card">
+        <h2 class="title"></h2>
+        <h3 class="episode-code"></h3>
+        <img src="" alt="" />
+        <div class="summary"></div>
+      </section>
+    </template>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
