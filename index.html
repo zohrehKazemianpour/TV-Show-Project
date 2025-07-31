@@ -7,13 +7,18 @@
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
-
+  
+  <input type="text" id="searchInput" placeholder="Search episodes..." />
+  <span id="matchCount"></span>
+  
   <body>
     <div id="container"></div>
     <template id="episode-template">
       <section class="card">
-        <h2 class="title"></h2>
-        <h3 class="episode-code"></h3>
+        <div class="header-line">
+           <h2 class="title"></h2>
+           <h3 class="episode-code"></h3>
+        </div>
         <img class="episode-image" src="" alt="" />
         <div class="summary"></div>
       </section>
@@ -28,4 +33,5 @@
   Data sourced from <a href="https://tvmaze.com/" target="_blank" rel="noopener">TVMaze.com</a>
 </footer>
   </body>
+  
 </html>
