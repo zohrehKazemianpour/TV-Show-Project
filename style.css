@@ -5,6 +5,30 @@ body {
   line-height: 1.5;
 }
 
+#searchInput {
+  width: 10%;
+  padding: 10px;
+  margin: 10px 5px 5px 20px;
+  border: 1px solid #070303;
+  border-radius: 5px;
+}
+
+.header-line {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Optional spacing between title and season number */
+  border: 1px solid #090808;
+  border-radius: 10px;  
+  padding: 10px; /* Adjust the value as needed */
+  margin-bottom: 12px; /* Space between header and content */
+}
+
+.header-line h2,
+.header-line h3 {
+  margin: 0; /* Remove default spacing */
+}
+
+
 /* Container Layout */
 #container {
   display: grid;
