@@ -14,11 +14,11 @@ function setup() { // This function runs when the page is loaded
     const searchTerm = searchInput.value; // Keep original casing
 
     const filteredEpisodes = allEpisodes.filter((episode) => {
-      const title = episode.name;
-      const summary = episode.summary || "";
-      return title.includes(searchTerm) || summary.includes(searchTerm); // case-sensitive match
+      const title = episode.name.toLowerCase();   // Convert title to lowercase for case-insensitive search
+      const summary = (episode.summary || "").toLowerCase(); // 
+      const term = searchTerm.toLowerCase();
+      return title.includes(term) || summary.includes(term);
     });
-  
   
     container.innerHTML = ""; // Clear previous results
     filteredEpisodes.forEach((episode) => {
