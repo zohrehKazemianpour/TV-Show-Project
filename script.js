@@ -1,36 +1,69 @@
-//You can edit ALL of the code here
-function setup() { // This function runs when the page is loaded
+function setup() {
   const allEpisodes = getAllEpisodes();
   const container = document.getElementById("container");
-  allEpisodes.forEach((episode) => {
-    const card = createEpisodeCard(episode);
-    container.appendChild(card);
-  });
-
+  const selector = document.getElementById("selector");
   const searchInput = document.getElementById("searchInput");
   const matchCount = document.getElementById("matchCount");
 
-  searchInput.addEventListener("input", () => { // Add an event listener for input changes in the search box
-    const searchTerm = searchInput.value; // Keep original casing
+  // Add default "All episodes" option
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "all";
+  defaultOption.textContent = "All episodes";
+  selector.appendChild(defaultOption);
 
+  // Display all episodes and populate the selector
+  allEpisodes.forEach((episode) => {
+    const card = createEpisodeCard(episode);
+    container.appendChild(card);
+
+    const option = document.createElement("option");
+    option.value = episode.id; // 🔥 This is key
+    option.textContent = `S${String(episode.season).padStart(2, '0')}E${String(episode.number).padStart(2, '0')} - ${episode.name}`;
+    selector.appendChild(option);
+  });
+
+  // Selector filter functionality
+  selector.addEventListener("change", () => {
+    const selectedId = selector.value;
+    container.innerHTML = ""; // clear current cards
+
+    if (selectedId === "all") {
+      allEpisodes.forEach((episode) => {
+        const card = createEpisodeCard(episode);
+        container.appendChild(card);
+      });
+      matchCount.textContent = `Displaying ${allEpisodes.length}/${allEpisodes.length} episodes`;
+    } else {
+      const selectedEpisode = allEpisodes.find(
+        (ep) => ep.id.toString() === selectedId
+      );
+      if (selectedEpisode) {
+        const card = createEpisodeCard(selectedEpisode);
+        container.appendChild(card);
+        matchCount.textContent = `Displaying 1/${allEpisodes.length} episodes`;
+      } else {
+        matchCount.textContent = `No match found.`;
+      }
+    }
+  });
+
+  // Search filter functionality
+  searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.toLowerCase();
     const filteredEpisodes = allEpisodes.filter((episode) => {
-      const title = episode.name.toLowerCase();   // Convert title to lowercase for case-insensitive search
-      const summary = (episode.summary || "").toLowerCase(); // 
-      const term = searchTerm.toLowerCase();
-      return title.includes(term) || summary.includes(term);
+      const title = episode.name.toLowerCase();
+      const summary = (episode.summary || "").toLowerCase();
+      return title.includes(searchTerm) || summary.includes(searchTerm);
     });
-  
-    container.innerHTML = ""; // Clear previous results
+
+    container.innerHTML = "";
     filteredEpisodes.forEach((episode) => {
       const card = createEpisodeCard(episode);
       container.appendChild(card);
     });
 
-    const totalEpisodes = allEpisodes.length; // Total number of episodes
-    matchCount.textContent = `Displaying ${filteredEpisodes.length}/${totalEpisodes} episodes`; // Display the count of matched episodes
-   
+    matchCount.textContent = `Displaying ${filteredEpisodes.length}/${allEpisodes.length} episodes`;
   });
-  
 }
 
 
