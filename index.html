@@ -3,40 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TV Show Project zohrehkazemianpour</title>
+    <title>TV Show Project | delmorallopez</title>
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
-  
-  <Select id="selector"> 
-    <option value="all">Select one episode...</option>
-  </Select>
 
-
-  <input type="text" id="searchInput" placeholder="Search episodes..." />
-  <span id="matchCount"></span>
-  
   <body>
-    <div id="container"></div>
-    <template id="episode-template">
-      <section class="card">
-        <div class="header-line">
-           <h2 class="title"></h2>
-           <h3 class="episode-code"></h3>
+    <div class="search-container">
+      <div class="dropdown">
+        <label for="episode-select" class="visually-hidden"
+          >Select episode</label
+        >
+        <select
+          name="episode-select"
+          id="episode-select"
+          title="Select episode"
+        ></select>
+      </div>
+      <label for="mySearch" class="visually-hidden">Search episodes</label>
+      <input type="search" id="mySearch" placeholder="Search episodes..." />
+      <div id="search-count"></div>
+    </div>
+
+    <div id="episode-container">
+      <template id="episode-template">
+        <div class="episode">
+          <div class="header-line">
+            <h2 class="title"></h2>
+            <h3 class="season-number"></h3>
+          </div>
+          <image class="image" />
+          <p class="summary"></p>
         </div>
-        <img class="episode-image" src="" alt="" />
-        <div class="summary"></div>
-      </section>
-    </template>
+      </template>
+    </div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
 
     <!-- Loads YOUR javascript code -->
     <script src="script.js"></script>
+
     <footer>
-  Data sourced from <a href="https://tvmaze.com/" target="_blank" rel="noopener">TVMaze.com</a>
-</footer>
+      Data sourced from
+      <a href="https://tvmaze.com/" target="_blank" rel="noopener"
+        >TVMaze.com</a
+      >
+    </footer>
   </body>
-  
 </html>
