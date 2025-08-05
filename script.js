@@ -1,13 +1,56 @@
 
 function setup() {
   render();
-  populateEpisodeSelector();
+  fetchEpisodes();
 }
-const allEpisodes = getAllEpisodes();
+// Update appState to include loading and error states
 const appState = {
-  allEpisodes,
+  episodes:[],
   searchTerm: "",
+  isLoading: true,
+  error: null
 };
+
+async function fetchEpisodes() {
+  try {
+    const response = await fetch('https://api.tvmaze.com/shows/82/episodes');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    appState.episodes = data;
+    appState.isLoading = false;
+    render();
+    populateEpisodeSelector();
+  } catch (error) {
+    appState.error = error.message;
+    appState.isLoading = false;
+    renderError();
+  }
+}
+
+// New function to render error state
+function renderError() {
+  const rootElem = document.getElementById("episode-container");
+  rootElem.innerHTML = `
+    <div class="error-message">
+      <h3>Error loading episodes</h3>
+      <p>${appState.error}</p>
+      <button onclick="fetchEpisodes()">Retry</button>
+    </div>
+  `;
+}
+
+// New function to render loading state
+function renderLoading() {
+  const rootElem = document.getElementById("episode-container");
+  rootElem.innerHTML = `
+    <div class="loading-message">
+      <div class="spinner"></div>
+      <p>Loading episodes...</p>
+    </div>
+  `;
+}
 
 const template = document.getElementById("episode-template");
 
@@ -47,10 +90,24 @@ function handleSearchInput(event) {
 function render() {
   // 1. Clear the container
   const rootElem = document.getElementById("episode-container");
+    if (appState.isLoading) {
+    rootElem.innerHTML = `<div class="loading">Loading episodes...</div>`;
+    return;
+  }
+
+  if (appState.error) {
+    rootElem.innerHTML = `
+      <div class="error">
+        <p>Error: ${appState.error}</p>
+        <button onclick="fetchEpisodes()">Retry</button>
+      </div>
+    `;
+    return;
+  }
   rootElem.innerHTML = "";
 
   // 2. Filter the episodes
-  const filteredEpisodes = appState.allEpisodes.filter((episode) => {
+  const filteredEpisodes = appState.episodes.filter((episode) => {
     const nameMatch = episode.name
       .toLowerCase()
       .includes(appState.searchTerm.toLowerCase());
@@ -61,7 +118,7 @@ function render() {
   });
 
   const searchCount = document.getElementById("search-count");
-  searchCount.innerHTML = `displaying:${filteredEpisodes.length}/${appState.allEpisodes.length}`;
+  searchCount.innerHTML = `displaying:${filteredEpisodes.length}/${appState.episodes.length}`;
 
   // 3. Render the episodes
   const episodeElemments = filteredEpisodes.map(createFilmCard); // This line maps each episode to a card element
@@ -72,15 +129,16 @@ function render() {
 }
 const populateEpisodeSelector = () => {
   const select = document.getElementById("episode-select");
+    select.innerHTML = ""; // Clear existing options
   const defaultOption = document.createElement("option");
   defaultOption.value = "";
   defaultOption.textContent = "Select an Episode";
   defaultOption.selected = true; // This makes it the default selection
   select.appendChild(defaultOption);
-  for (let i = 0; i < appState.allEpisodes.length; i++) {
+  for (let i = 0; i < appState.episodes.length; i++) {
     const option = document.createElement("option");
     option.value = i;
-    const episode = appState.allEpisodes[i];
+    const episode = appState.episodes[i];
     option.innerHTML = `S${episode.season
       .toString()
       .padStart(2, "0")}E${episode.number.toString().padStart(2, "0")}-${
@@ -93,7 +151,7 @@ const populateEpisodeSelector = () => {
 const episodeSelector = document.getElementById("episode-select");
 episodeSelector.addEventListener("change", function () {
   const selectedIndex = this.value;
-  selectedEpisode = appState.allEpisodes[selectedIndex];
+  selectedEpisode = appState.episodes[selectedIndex];
 
   const rootElem = document.getElementById("episode-container");
   rootElem.innerHTML = "";
