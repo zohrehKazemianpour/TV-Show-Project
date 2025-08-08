@@ -2,6 +2,7 @@
 const appState = {
   shows: [],        // list of shows from /shows
   allEpisodes: [],  // episodes for the selected show
+  episodesByShow: [], // key: show.id, value: array of episodes
   searchTerm: "",
 };
 
@@ -14,7 +15,6 @@ let searchCount;
 let showSelect;
 let episodeSelect;
 
-const endpoint = "https://api.tvmaze.com/shows";
 
 // Helper to show a loading/error/info message in the DOM
 function showMessage(text = "", isError = false) {
@@ -25,41 +25,39 @@ function showMessage(text = "", isError = false) {
 
 // Fetch list of shows and populate the show select
 async function fetchShows() {
-  showMessage("Loading shows...");
-  try {
-    const res = await fetch(endpoint);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const shows = await res.json();
-    appState.shows = Array.isArray(shows) ? shows : [];
-    populateShowSelector();
-    showMessage(""); // clear
-  } catch (err) {
-    console.error("Failed to fetch shows:", err);
-    showMessage("Error loading shows. Please try again later.", true);
+  if (appState.shows.length > 0) {
+    // Already fetched — use cached data
+    return appState.shows;
   }
+
+  const response = await fetch("https://api.tvmaze.com/shows");
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  const shows = await response.json();
+
+  appState.shows = Array.isArray(shows) ? shows : [];
+  return appState.shows;
 }
 
 // Fetch episodes for a show id, store them and render
 async function fetchEpisodesForShow(showId) {
-  if (!showId) return;
-  showMessage("Loading episodes...");
-  try {
-    const res = await fetch(`${endpoint}/${encodeURIComponent(showId)}/episodes`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const episodes = await res.json();
-    appState.allEpisodes = Array.isArray(episodes) ? episodes : [];
-    appState.searchTerm = ""; // reset search
-    if (searchInput) searchInput.value = "";
-    render();
+  if (appState.episodesByShow[showId]) {
+    // Already fetched — use cached episodes
+    appState.allEpisodes = appState.episodesByShow[showId];
     populateEpisodeSelector();
-    showMessage("");
-  } catch (err) {
-    console.error("Failed to fetch episodes:", err);
-    appState.allEpisodes = [];
     render();
-    populateEpisodeSelector();
-    showMessage("Error loading episodes. Please try again later.", true);
+    return;
   }
+
+  const endpoint = `https://api.tvmaze.com/shows/${showId}/episodes`;
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  const episodes = await response.json();
+
+  // Save in cache
+  appState.episodesByShow[showId] = episodes;
+  appState.allEpisodes = episodes;
+  populateEpisodeSelector();
+  render();
 }
 
 // Populate the show dropdown
@@ -73,13 +71,19 @@ function populateShowSelector() {
   defaultOption.selected = true;
   showSelect.appendChild(defaultOption);
 
+  // Sort and add each show
+  const sortedShows = appState.shows
+    .slice()
+    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
   // Put a short label for each show. change what to display
-  appState.shows.forEach((show) => {
-    const opt = document.createElement("option");
-    opt.value = show.id; // later used for /shows/:id/episodes
-    opt.textContent = show.name;
-    showSelect.appendChild(opt);
+  sortedShows.forEach((show) => {
+    const option = document.createElement("option");
+    option.value = show.id; // use show.id for fetching episodes later
+    option.textContent = show.name;
+    showSelect.appendChild(option);
   });
+  
 }
 
 // Populate the episode dropdown (for current appState.allEpisodes)
@@ -213,7 +217,12 @@ function setup() {
 
   // initial render & fetch shows
   render();
-  fetchShows();
+  fetchShows().then(() => {
+    populateShowSelector();
+  }).catch(err => {
+    showMessage("Failed to load shows", true);
+    console.error(err);
+});
 }
 
 window.onload = setup;
