@@ -1,24 +1,54 @@
-/* Basic Reset */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  line-height: 1.5;
+#episode-container {
+  color: rgb(16, 10, 10);
 }
 
-#searchInput {
-  width: 10%;
+/* Search container styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 20px;
   padding: 10px;
-  margin: 10px 5px 5px 20px;
-  border: 1px solid #070303;
-  border-radius: 5px;
+  flex-wrap: nowrap; /* Prevent wrapping to next line */
 }
 
-#selector {
-  width: 20%;
-  padding: 10px;
-  margin: 10px 5px 5px 20px;
-  border: 1px solid #070303;
+/* Search count styling */
+#search-count {
+  color: #666; /* Lighter gray color */
+  font-size: 14px;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+/* Episode selector styling */
+#episode-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px; 
+}
+
+/* Scroll back button styling */
+[data-button="scroll-back"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
   border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+[data-button="scroll-back"]:hover {
+  background-color: #0056b3;
+}
+
+[data-button="scroll-back"]:active {
+  background-color: #004085;
 }
 
 .header-line {
@@ -26,9 +56,8 @@ body {
   align-items: center;
   gap: 10px; /* Optional spacing between title and season number */
   border: 1px solid #090808;
-  border-radius: 10px;  
-  padding: 10px; /* Adjust the value as needed */
-  margin-bottom: 12px; /* Space between header and content */
+  border-radius: 10px;
+  padding: 12px; /* Adjust the value as needed */
 }
 
 .header-line h2,
@@ -36,55 +65,50 @@ body {
   margin: 0; /* Remove default spacing */
 }
 
-
-/* Container Layout */
-#container {
+#episode-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* force 3 columns */
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 20px; /* spacing between cards */
   padding: 20px;
 }
 
-/* Card Styling */
-.card {
-  border: 1px solid #090808;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#show-select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px; 
 }
 
-.episode-image {
-  width: 100%;
-  border-radius: 5px;
-  margin-bottom: 10px;
+
+.image {
+  margin-top: 12px; /* adds space above the image */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
 }
 
 .title {
-  margin: 0 0 5px 0;
-  color: #333;
+  margin-bottom: 8px; /* space below title */
 }
 
-.episode-code {
-  margin: 0 0 10px 0;
-  color: #666;
-  font-size: 0.9em;
-}
-
-.summary {
-  color: #444;
-  font-size: 0.95em;
-}
-
-footer {
-  text-align: center;
+.episode {
+  border: 1px solid #ccc;
+  border-radius: 10px; /* Increased curve for rounded corners */
   padding: 20px;
-  color: #666;
-  font-size: 0.9em;
-  margin-top: 40px;
-  border-top: 1px solid #eee;
+  margin: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
-footer a {
-  color: #2277cc;
-  text-decoration: none;
+.visually-hidden {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
 }
