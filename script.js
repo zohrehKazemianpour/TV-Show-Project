@@ -83,7 +83,6 @@ function populateShowSelector() {
     option.textContent = show.name;
     showSelect.appendChild(option);
   });
-  
 }
 
 // Populate the episode dropdown (for current appState.allEpisodes)
