@@ -3,41 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TV Show Project | delmorallopez</title>
+    <title>TV Show Project | Zohreh Kazemianpour</title>
     <link href="style.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
 
   <body>
-    
-    <div id="message" role="status" aria-live="polite"></div>
-    <div class="search-container">
-      <select id="show-select"></select>
-      <div class="dropdown">
-        <label for="episode-select" class="visually-hidden"
-          >Select episode</label>
+    <div class="episode-view" id="episode-view">
+      <div id="message" role="status" aria-live="polite"></div>
+      <div class="search-container">
+        <select id="show-select"></select>
+        <div class="dropdown">
+          <label for="episode-select" class="visually-hidden"
+            >Select episode</label
+          >
+          <select
+            name="episode-select"
+            id="episode-select"
+            title="Select episode"
+          ></select>
+        </div>
+        <label for="mySearch" class="visually-hidden">Search episodes</label>
+        <input type="search" id="mySearch" placeholder="Search episodes..." />
+        <div id="search-count"></div>
+        <button id="backToShowsBTN">Back to Shows</button>
+      </div>
+      <div id="episode-container">
+        <template id="episode-template">
+          <div class="episode">
+            <div class="header-line">
+              <h2 class="title"></h2>
+              <h3 class="season-number"></h3>
+            </div>
+            <image class="image" />
+            <p class="summary"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="gallery-show-view" id="gallery-show-view">
+      <div>
+        <label for="showSearch">filter for</label>
+        <input type="search" id="showSearch" placeholder="filtering for ..." />
+        <div id="show-search-count"></div>
         <select
-          name="episode-select"
-          id="episode-select"
-          title="Select episode"
+          name="-filtered-show-select"
+          id="filtered-show-select"
         ></select>
       </div>
-      <label for="mySearch" class="visually-hidden">Search episodes</label>
-      <input type="search" id="mySearch" placeholder="Search episodes..." />
-      <div id="search-count"></div>
-    </div>
-
-    <div id="episode-container">
-      <template id="episode-template">
-        <div class="episode">
-          <div class="header-line">
-            <h2 class="title"></h2>
-            <h3 class="season-number"></h3>
+      <div id="show-container">
+        <template id="show-template">
+          <div class="show">
+            <h2 class="name"></h2>
+            <image class="image" />
+            <p class="summary"></p>
+            <div class="showInfo">
+              <h3 class="rating"></h3>
+              <h3 class="genres"></h3>
+              <h3 class="status"></h3>
+              <h3 class="runTime"></h3>
+            </div>
           </div>
-          <image class="image" />
-          <p class="summary"></p>
-        </div>
-      </template>
+        </template>
+      </div>
     </div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
